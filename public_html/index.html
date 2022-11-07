@@ -12,16 +12,60 @@
 </head>
 <body>
     <div> 지도s</div>
+
   
     <div id="map" style="width:100%;height:400px;">
     
     </div>
     <script>
-        $(document).ready(function(){
+        $(document).ready(async function(){
+            let XY = await getLocation(); 
+            // alert("위도" + XY.lat) ;
+            // alert('경도'+ XY.lng );
             var mapDiv = document.getElementById('map'); // 'map'으로 선언해도 동일
              //옵션 없이 지도 객체를 생성하면 서울 시청을 중심으로 하는 16 레벨의 지도가 생성됩니다.
             var map = new naver.maps.Map(mapDiv);
+
+            $.ajax({
+                url:"/health_list",
+                type :"GET" ,
+                cache: false ,
+                dataType : "json" , 
+                
+                data : { "Q0" : "서울특별시" , "siDoCd": "11" , "siGunGuCd": "590", "locAddr": "300", "hmcRdatCd": "" , "hchType" : "", "numOfRows": "1000", "pageNo": "1"} ,
+                success : function(data){
+                    console.log(data);
+
+                },
+                error : function(request, status,error){
+
+                }
+            });
         });
+
+        async function getLocation(){
+            let XY = new Object();
+            if(navigator.geolocation){
+
+                let promise = new Promise((resolve, rejected)=> {
+                    navigator.geolocation.getCurrentPosition((position)=>{
+                        resolve(position);
+
+                    });
+                });
+                let position =await promise;
+                
+                XY.lat = position.coords.latitude ;  //위도
+                XY.lng = position.coords.longitude;  //경도 
+
+                
+
+                
+                
+            }
+            return XY ;
+
+        }
     </script>
     
 </body>
