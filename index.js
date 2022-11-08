@@ -20,9 +20,6 @@ app.get("/health_list", (req, res)=>{
                 "hmcNm" : req.query.hmcNm,
                 "siDoCd" : req.query.siDoCd,
                 "siGunGuCd" : req.query.siGunGuCd ,
-                "locAddr" : req.query.locAddr,
-                "hmcRdatCd" : req.query.hmcRdatCd,
-                "hchType" : req.query.hchType,
                 "numOfRows" : req.query.numOfRows,
                 "pageNo" : req.query.pageNo 
 

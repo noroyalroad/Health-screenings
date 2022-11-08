@@ -22,9 +22,19 @@
             let XY = await getLocation(); 
             // alert("위도" + XY.lat) ;
             // alert('경도'+ XY.lng );
-            var mapDiv = document.getElementById('map'); // 'map'으로 선언해도 동일
-             //옵션 없이 지도 객체를 생성하면 서울 시청을 중심으로 하는 16 레벨의 지도가 생성됩니다.
-            var map = new naver.maps.Map(mapDiv);
+            await naver.maps.Service.reverseGeocode({
+                location : new naver.maps.LatLng(XY.lat, XY.lng)
+            },function(status, response){
+                let result =response.result ;
+                let items = result.items;
+
+                console.log(items[0].addrdetail.sido.split(" "));
+                console.log(items[1].addrdetail.sigugun.split(" "));    
+                
+
+                
+            });
+            
 
             $.ajax({
                 url:"/health_list",
@@ -32,9 +42,17 @@
                 cache: false ,
                 dataType : "json" , 
                 
-                data : { "Q0" : "서울특별시" , "siDoCd": "11" , "siGunGuCd": "590", "locAddr": "300", "hmcRdatCd": "" , "hchType" : "", "numOfRows": "1000", "pageNo": "1"} ,
+                data : { "hmcNm" : "서울" , "siDoCd": "11" , "siGunGuCd": "590",  "numOfRows": "1000", "pageNo": "1"} ,
                 success : function(data){
                     console.log(data);
+                    var mapDiv = document.getElementById('map'); // 'map'으로 선언해도 동일
+                    //옵션 없이 지도 객체를 생성하면 서울 시청을 중심으로 하는 16 레벨의 지도가 생성됩니다.
+                      // 성공시 건강검진병원의 정보와 네이버 맵스 출력 
+                    var mapOptions =  {
+                    center: new naver.maps.LatLng(XY.lat, XY.lng), // 현재 위치하고 있는 위도와 경도값을 사용해 위치이동
+                    zoom: 13 
+                    };
+                    var map = new naver.maps.Map(mapDiv,mapOptions);
 
                 },
                 error : function(request, status,error){
