@@ -351,7 +351,7 @@
               cache: false,
               dataType: "json",
 
-              data: { hmcNm: hmcNm[0], siDoCd: sc, siGunGuCd: "", numOfRows: "1000", pageNo: "1" },
+              data: { hmcNm: "서울특별시", siDoCd: "11", siGunGuCd: "", numOfRows: "1000", pageNo: "" },
               //sido 천안시  sigugu 동남구
               success: function (data) {
                 console.log(data);
@@ -364,9 +364,54 @@
                 // 성공시 건강검진병원의 정보와 네이버 맵스 출력
                 var mapOptions = {
                   center: new naver.maps.LatLng(XY.lat, XY.lng), // 현재 위치하고 있는 위도와 경도값을 사용해 위치이동
-                  zoom: 13,
+                  zoom: 10,
                 };
                 var map = new naver.maps.Map(mapDiv, mapOptions);
+
+                data.items.item.forEach(function (it, index) {
+                  naver.maps.Service.geocode(
+                    {
+                      address: it.locAddr,
+                    },
+                    function (status, response) {
+                      if (status !== naver.maps.Service.Status.OK) {
+                        return alert("Something wrong!");
+                      }
+
+                      var result = response.result, // 검색 결과의 컨테이너
+                        items = result.items; // 검색 결과의 배열
+
+                      //   let ggg = items[0]
+                      //   console.log(items[0].point.x);
+                      //   console.log(items[0].point.y);
+                      //   let g2 = ggg.point;
+                      //   console.log(g2.x);
+                      let X;
+                      let Y;
+
+                      X = items[0].point.x;
+                      Y = items[0].point.y;
+                      //   console.log(X);
+                      //   console.log(Y);
+                      let health_location = new naver.maps.LatLng(Y, X);
+
+                      // do Something
+
+                      let marker = new naver.maps.Marker({
+                        map: map,
+                        position: health_location,
+                      });
+
+                      naver.maps.Event.addListener(marker, "click", function (e) {
+                        if (infowindow.getMap()) {
+                          infowindow.close();
+                        } else {
+                          infowindow.open(map, marker);
+                        }
+                      });
+                    }
+                  );
+                });
               },
 
               error: function (request, status, error) {},
@@ -427,14 +472,27 @@
 
           $("#mapList").append(mapList);
 
-          var map = new naver.maps.Map("map", {
+          let map = new naver.maps.Map("map", {
             center: new naver.maps.LatLng(longitude, latitude),
             zoom: 14,
           });
-          var marker = new naver.maps.Marker({
-            map: map,
-            position: new naver.maps.LatLng(longitude, latitude),
-          });
+          //   var marker = new naver.maps.Marker({
+          //     map: map,
+          //     position: health_location,
+          //   });
+
+          function moveMap(len, lat) {
+            var mapOptions = {
+              center: new naver.maps.LatLng(len, lat),
+              zoom: 10,
+              mapTypeControl: true,
+            };
+            var map = new naver.maps.Map("map", mapOptions);
+            var marker = new naver.maps.Marker({
+              position: new naver.maps.LatLng(len, lat),
+              map: map,
+            });
+          }
         }
       });
 
