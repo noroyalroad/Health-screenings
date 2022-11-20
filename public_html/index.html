@@ -351,7 +351,7 @@
               cache: false,
               dataType: "json",
 
-              data: { hmcNm: "서울특별시", siDoCd: "11", siGunGuCd: "", numOfRows: "1000", pageNo: "" },
+              data: { hmcNm: "서울", siDoCd: "11", siGunGuCd: "", numOfRows: "1000", pageNo: "" },
               //sido 천안시  sigugu 동남구
               success: function (data) {
                 console.log(data);
@@ -364,9 +364,10 @@
                 // 성공시 건강검진병원의 정보와 네이버 맵스 출력
                 var mapOptions = {
                   center: new naver.maps.LatLng(XY.lat, XY.lng), // 현재 위치하고 있는 위도와 경도값을 사용해 위치이동
-                  zoom: 10,
+                  zoom: 13,
                 };
                 var map = new naver.maps.Map(mapDiv, mapOptions);
+                var hl = {};
 
                 data.items.item.forEach(function (it, index) {
                   naver.maps.Service.geocode(
@@ -391,9 +392,11 @@
 
                       X = items[0].point.x;
                       Y = items[0].point.y;
-                      //   console.log(X);
+
                       //   console.log(Y);
                       let health_location = new naver.maps.LatLng(Y, X);
+                      //   console.log(health_location);
+                      hl.x = health_location.x;
 
                       // do Something
 
@@ -402,98 +405,115 @@
                         position: health_location,
                       });
 
-                      naver.maps.Event.addListener(marker, "click", function (e) {
-                        if (infowindow.getMap()) {
-                          infowindow.close();
-                        } else {
-                          infowindow.open(map, marker);
-                        }
-                      });
+                      //   naver.maps.Event.addListener(marker, "click", function (e) {
+                      //     if (infowindow.getMap()) {
+                      //       infowindow.close();
+                      //     } else {
+                      //       infowindow.open(map, marker);
+                      //     }
+                      //   });
                     }
                   );
                 });
+
+                function searchAddressToCoordinate(address) {
+                  naver.maps.Service.geocode(
+                    {
+                      query: address,
+                    },
+                    function (status, response) {
+                      if (status === naver.maps.Service.Status.ERROR) {
+                        return alert("Something Wrong!");
+                      }
+                      if (response.v2.meta.totalCount === 0) {
+                        return alert("올바른 주소를 입력해주세요.");
+                      }
+                      var htmlAddresses = [],
+                        item = response.v2.addresses[0],
+                        point = new naver.maps.Point(item.x, item.y);
+                      if (item.roadAddress) {
+                        htmlAddresses.push("[도로명 주소] " + item.roadAddress);
+                      }
+                      if (item.jibunAddress) {
+                        htmlAddresses.push("[지번 주소] " + item.jibunAddress);
+                      }
+                      if (item.englishAddress) {
+                        htmlAddresses.push("[영문명 주소] " + item.englishAddress);
+                      }
+
+                      insertAddress(item.roadAddress, item.x, item.y);
+                    }
+                  );
+                }
+                $("#address").on("keydown", function (e) {
+                  var keyCode = e.which;
+                  if (keyCode === 13) {
+                    // Enter Key
+                    searchAddressToCoordinate($("#address").val());
+                  }
+                });
+                $("#submit").on("click", function (e) {
+                  e.preventDefault();
+                  searchAddressToCoordinate($("#address").val());
+                });
+                naver.maps.Event.once(map, "init_stylemap");
+                // console.log(data);
+
+                let last = {};
+
+                function insertAddress(address, latitude, longitude) {
+                  data.items.item.forEach(function (it, index) {
+                    naver.maps.Service.geocode(
+                      {
+                        address: it.locAddr,
+                      },
+                      function (status, response) {
+                        if (status !== naver.maps.Service.Status.OK) {
+                          return alert("Something wrong!");
+                        }
+
+                        var result = response.result, // 검색 결과의 컨테이너
+                          items = result.items; // 검색 결과의 배열
+
+                        let X;
+                        let Y;
+
+                        X = items[0].point.x;
+                        Y = items[0].point.y;
+                        //   console.log(X);
+                        //   console.log(Y);
+                        let health_location = new naver.maps.LatLng(Y, X);
+                        //   console.log(health_location);
+
+                        var marker = new naver.maps.Marker({
+                          map: map,
+                          position: health_location,
+                        });
+                      }
+                    );
+                  });
+                  var mapList = "";
+                  mapList += "<tr>";
+                  mapList += "	<td>" + address + "</td>";
+                  mapList += "	<td>" + latitude + "</td>";
+                  mapList += "	<td>" + longitude + "</td>";
+                  mapList += "</tr>";
+
+                  $("#mapList").append(mapList);
+
+                  let map = new naver.maps.Map("map", {
+                    center: new naver.maps.LatLng(longitude, latitude),
+                    zoom: 14,
+                  });
+                }
               },
 
               error: function (request, status, error) {},
             });
           }
         );
-        function searchAddressToCoordinate(address) {
-          naver.maps.Service.geocode(
-            {
-              query: address,
-            },
-            function (status, response) {
-              if (status === naver.maps.Service.Status.ERROR) {
-                return alert("Something Wrong!");
-              }
-              if (response.v2.meta.totalCount === 0) {
-                return alert("올바른 주소를 입력해주세요.");
-              }
-              var htmlAddresses = [],
-                item = response.v2.addresses[0],
-                point = new naver.maps.Point(item.x, item.y);
-              if (item.roadAddress) {
-                htmlAddresses.push("[도로명 주소] " + item.roadAddress);
-              }
-              if (item.jibunAddress) {
-                htmlAddresses.push("[지번 주소] " + item.jibunAddress);
-              }
-              if (item.englishAddress) {
-                htmlAddresses.push("[영문명 주소] " + item.englishAddress);
-              }
-
-              insertAddress(item.roadAddress, item.x, item.y);
-            }
-          );
-        }
-
-        $("#address").on("keydown", function (e) {
-          var keyCode = e.which;
-          if (keyCode === 13) {
-            // Enter Key
-            searchAddressToCoordinate($("#address").val());
-          }
-        });
-        $("#submit").on("click", function (e) {
-          e.preventDefault();
-          searchAddressToCoordinate($("#address").val());
-        });
-        naver.maps.Event.once(map, "init_stylemap", initGeocoder);
 
         //검색정보를 테이블로 작성해주고, 지도에 마커를 찍어준다.
-        function insertAddress(address, latitude, longitude) {
-          var mapList = "";
-          mapList += "<tr>";
-          mapList += "	<td>" + address + "</td>";
-          mapList += "	<td>" + latitude + "</td>";
-          mapList += "	<td>" + longitude + "</td>";
-          mapList += "</tr>";
-
-          $("#mapList").append(mapList);
-
-          let map = new naver.maps.Map("map", {
-            center: new naver.maps.LatLng(longitude, latitude),
-            zoom: 14,
-          });
-          //   var marker = new naver.maps.Marker({
-          //     map: map,
-          //     position: health_location,
-          //   });
-
-          function moveMap(len, lat) {
-            var mapOptions = {
-              center: new naver.maps.LatLng(len, lat),
-              zoom: 10,
-              mapTypeControl: true,
-            };
-            var map = new naver.maps.Map("map", mapOptions);
-            var marker = new naver.maps.Marker({
-              position: new naver.maps.LatLng(len, lat),
-              map: map,
-            });
-          }
-        }
       });
 
       async function getLocation() {
