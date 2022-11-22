@@ -23,6 +23,7 @@
             <th>주소</th>
             <th>위도</th>
             <th>경도</th>
+            <!-- <th>경도</th> -->
           </tr>
         </thead>
         <tbody id="mapList"></tbody>
@@ -351,7 +352,7 @@
               cache: false,
               dataType: "json",
 
-              data: { hmcNm: "서울", siDoCd: "11", siGunGuCd: "", numOfRows: "1000", pageNo: "" },
+              data: { hmcNm: hmcNm[0], siDoCd: sc, siGunGuCd: "", numOfRows: "1000", pageNo: "" },
               //sido 천안시  sigugu 동남구
               success: function (data) {
                 console.log(data);
@@ -367,7 +368,6 @@
                   zoom: 13,
                 };
                 var map = new naver.maps.Map(mapDiv, mapOptions);
-                var hl = {};
 
                 data.items.item.forEach(function (it, index) {
                   naver.maps.Service.geocode(
@@ -392,11 +392,14 @@
 
                       X = items[0].point.x;
                       Y = items[0].point.y;
+                      let name = it.hmcNm;
+                      let addr = it.locAddr;
+
+                      console.log(addr);
 
                       //   console.log(Y);
                       let health_location = new naver.maps.LatLng(Y, X);
                       //   console.log(health_location);
-                      hl.x = health_location.x;
 
                       // do Something
 
@@ -405,13 +408,27 @@
                         position: health_location,
                       });
 
-                      //   naver.maps.Event.addListener(marker, "click", function (e) {
-                      //     if (infowindow.getMap()) {
-                      //       infowindow.close();
-                      //     } else {
-                      //       infowindow.open(map, marker);
-                      //     }
-                      //   });
+                      var contentString = ['<div class="iw_inner">', "   <h3>" + name + "</h3>", "   <p>" + addr + "<br />", "<a ref = button>" + "button" + "</button>", "   </p>", "</div>"].join("");
+
+                      var infowindow = new naver.maps.InfoWindow({
+                        content: contentString,
+                        maxWidth: 440,
+                        backgroundColor: "#eee",
+                        borderColor: "#2db400",
+                        borderWidth: 5,
+                        anchorSize: new naver.maps.Size(30, 30),
+                        anchorSkew: true,
+                        anchorColor: "#eee",
+                        pixelOffset: new naver.maps.Point(20, -20),
+                      });
+
+                      naver.maps.Event.addListener(marker, "click", function (e) {
+                        if (infowindow.getMap()) {
+                          infowindow.close();
+                        } else {
+                          infowindow.open(map, marker);
+                        }
+                      });
                     }
                   );
                 });
@@ -459,8 +476,6 @@
                 naver.maps.Event.once(map, "init_stylemap");
                 // console.log(data);
 
-                let last = {};
-
                 function insertAddress(address, latitude, longitude) {
                   data.items.item.forEach(function (it, index) {
                     naver.maps.Service.geocode(
@@ -483,15 +498,45 @@
                         //   console.log(X);
                         //   console.log(Y);
                         let health_location = new naver.maps.LatLng(Y, X);
+
                         //   console.log(health_location);
+                        let name = it.hmcNm;
+                        let addr = it.locAddr;
 
                         var marker = new naver.maps.Marker({
                           map: map,
                           position: health_location,
                         });
+
+                        var contentString = ['<div class="iw_inner">', "   <h3>" + name + "</h3>", "   <p>" + addr + "<br />", "   </p>", "</div>"].join("");
+                        var infowindow = new naver.maps.InfoWindow({
+                          content: contentString,
+                          maxWidth: 440,
+                          backgroundColor: "#eee",
+                          borderColor: "#2db400",
+                          borderWidth: 5,
+                          anchorSize: new naver.maps.Size(30, 30),
+                          anchorSkew: true,
+                          anchorColor: "#eee",
+                          pixelOffset: new naver.maps.Point(20, -20),
+                        });
+
+                        naver.maps.Event.addListener(marker, "click", function (e) {
+                          if (infowindow.getMap()) {
+                            infowindow.close();
+                          } else {
+                            infowindow.open(map, marker);
+                          }
+                        });
                       }
                     );
                   });
+
+                  let map = new naver.maps.Map("map", {
+                    center: new naver.maps.LatLng(longitude, latitude),
+                    zoom: 14,
+                  });
+
                   var mapList = "";
                   mapList += "<tr>";
                   mapList += "	<td>" + address + "</td>";
@@ -500,11 +545,6 @@
                   mapList += "</tr>";
 
                   $("#mapList").append(mapList);
-
-                  let map = new naver.maps.Map("map", {
-                    center: new naver.maps.LatLng(longitude, latitude),
-                    zoom: 14,
-                  });
                 }
               },
 
