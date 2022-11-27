@@ -15,17 +15,11 @@
       <input id="address" type="text" placeholder="검색할 주소" />
       <input id="submit" type="button" value="주소검색" />
     </div>
-
-    <div id="map" style="width: 500px; height: 800px"></div>
+    <div id="map" style="width: 800px; height: 800px"></div>
     <div id="list">
       <ul id="info"></ul>
     </div>
-    <div class="modal">
-      <div class="modal_body">
-        Modal
-        <div class="sang" style="border: 1px solid black; display: inline-block"></div>
-      </div>
-    </div>
+
     <div>
       <table>
         <thead>
@@ -39,6 +33,7 @@
         <tbody id="mapList"></tbody>
       </table>
     </div>
+
     <script>
       $(document).ready(async function () {
         let XY = await getLocation();
@@ -427,10 +422,15 @@
                         '<div class="iw_inner">',
                         "   <h3 id='cc'>" + name + "</h3>",
                         "   <p>" + addr + "<br />",
-                        '<div style = "border : 1px solid green; display : inline-block" id= "de">',
-                        '<a ref="#" id =detail>' + "button" + "</a>",
-                        "</div>",
                         "   </p>",
+                        "</div>",
+                        '<button id="modal_btn">' + "상세" + "</button>",
+                        '<div class ="modal_background">' + "</div>",
+                        '<div class ="modal_wrap">',
+                        '<div class="modal_close">',
+                        '<img class="closeImg" src="closeImg.png" alt="x버튼" />',
+                        "</div>",
+                        '<div class="text">' + name + "</div>",
                         "</div>",
                       ].join("");
 
@@ -452,31 +452,47 @@
                         } else {
                           infowindow.open(map, marker);
 
-                          const $ddd = document.getElementById("detail");
-                          const body = document.querySelector("body");
-                          const modal = document.querySelector(".modal");
-                          const $name = document.querySelector(".sang");
+                          function modalOpen() {
+                            document.querySelector(".modal_wrap").style.display = "block";
+                            document.querySelector(".modal_background").style.display = "block";
+                          }
+
+                          // 모달 끄기
+                          function modalClose() {
+                            document.querySelector(".modal_wrap").style.display = "none";
+                            document.querySelector(".modal_background").style.display = "none";
+                          }
+
+                          //버튼 클릭리스너 달기
+                          document.querySelector("#modal_btn").addEventListener("click", modalOpen);
+                          document.querySelector(".modal_close").addEventListener("click", modalClose);
+
+                          // const $ddd = document.querySelector(".detail");
+                          // const body = document.querySelector("body");
+                          // const modal = document.querySelector(".modal");
+                          // const $bd = document.querySelector(".modal_body");
+                          // const $nnn = document.getElementById("cc");
                           //   const $sh = document.createTextNode(name);
 
                           //   $name.appendChild($sh);
 
-                          $ddd.addEventListener("click", function () {
-                            modal.classList.toggle("show");
+                          // $ddd.addEventListener("click", function () {
+                          //   modal.classList.toggle("show");
 
-                            if (modal.classList.contains("show")) {
-                              body.style.overflow = "hidden";
-                            }
-                          });
+                          //   if (modal.classList.contains("show")) {
+                          //     body.style.overflow = "hidden";
+                          //   }
+                          // });
 
-                          modal.addEventListener("click", (event) => {
-                            if (event.target === modal) {
-                              modal.classList.toggle("show");
+                          // modal.addEventListener("click", (event) => {
+                          //   if (event.target === modal) {
+                          //     modal.classList.toggle("show");
 
-                              if (!modal.classList.contains("show")) {
-                                body.style.overflow = "auto";
-                              }
-                            }
-                          });
+                          //     if (!modal.classList.contains("show")) {
+                          //       body.style.overflow = "auto";
+                          //     }
+                          //   }
+                          // });
                         }
                       });
                     }
@@ -575,60 +591,12 @@
                         naver.maps.Event.addListener(marker, "click", function (e) {
                           if (infowindow.getMap()) {
                             infowindow.close();
-
-                            const $ddd = document.getElementById("detail");
-                            const body = document.querySelector("body");
-                            const modal = document.querySelector(".modal");
-                            const $name = document.querySelector(".sang");
-                            //   const $sh = document.createTextNode(name);
-
-                            //   $name.appendChild($sh);
-
-                            $ddd.addEventListener("click", function () {
-                              modal.classList.toggle("show");
-
-                              if (modal.classList.contains("show")) {
-                                body.style.overflow = "hidden";
-                              }
-                            });
-
-                            modal.addEventListener("click", (event) => {
-                              if (event.target === modal) {
-                                modal.classList.toggle("show");
-
-                                if (!modal.classList.contains("show")) {
-                                  body.style.overflow = "auto";
-                                }
-                              }
-                            });
                           } else {
                             infowindow.open(map, marker);
 
-                            const $ddd = document.getElementById("detail");
-                            const body = document.querySelector("body");
-                            const modal = document.querySelector(".modal");
-                            const $name = document.querySelector(".sang");
                             //   const $sh = document.createTextNode(name);
 
                             //   $name.appendChild($sh);
-
-                            $ddd.addEventListener("click", function () {
-                              modal.classList.toggle("show");
-
-                              if (modal.classList.contains("show")) {
-                                body.style.overflow = "hidden";
-                              }
-                            });
-
-                            modal.addEventListener("click", (event) => {
-                              if (event.target === modal) {
-                                modal.classList.toggle("show");
-
-                                if (!modal.classList.contains("show")) {
-                                  body.style.overflow = "auto";
-                                }
-                              }
-                            });
                           }
                         });
                       }

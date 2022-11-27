@@ -1,4 +1,4 @@
-#list {
+/* #list {
   border: 1px solid black;
   display: inline-block;
 }
@@ -6,14 +6,14 @@
   list-style: none;
   padding: 0px;
   margin: 0px;
-}
-#map {
+} */
+/* #map {
   float: left;
-}
+} */
 li {
   border-bottom: 1px solid black;
 }
-.modal {
+/* .modal {
   position: absolute;
   top: 0;
   left: 0;
@@ -47,4 +47,48 @@ li {
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
 
   transform: translateX(-50%) translateY(-50%);
+} */
+#cc {
+  color: red;
+}
+.modal_wrap {
+  display: none;
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  border: 2px solid black;
+  top: 50%;
+  left: 50%;
+  margin: -250px 0 0 -250px;
+  padding: 40px;
+  background: #eee;
+  z-index: 2;
+}
+.modal_background {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.modal_close {
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.modal_wrap .text {
+  margin-top: 45px;
+  margin-left: 5px;
+}
+
+.modal_close .closeImg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
