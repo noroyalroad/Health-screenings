@@ -320,7 +320,7 @@ $(document).ready(async function () {
         cache: false,
         dataType: "json",
 
-        data: { hmcNm: hmcNm[0], siDoCd: sc, siGunGuCd: "", numOfRows: "1000", pageNo: "" },
+        data: { hmcNm: "", siDoCd: sc, siGunGuCd: "" },
         //sido 천안시  sigugu 동남구
         success: function (data) {
           console.log(data);
@@ -339,8 +339,10 @@ $(document).ready(async function () {
           const $list = document.getElementById("list");
           const $info = document.getElementById("info");
           const container = document.querySelector(".container");
+          let btnId = 0;
+          let a = [];
 
-          data.items.item.forEach(function (it, index) {
+          data.items.item.forEach(function (it, index, arr) {
             naver.maps.Service.geocode(
               {
                 address: it.locAddr,
@@ -373,12 +375,13 @@ $(document).ready(async function () {
                 // }
 
                 var cnt = 0;
+                btnId += 1;
 
                 const item = document.createElement("div");
                 item.className = "item";
                 const icon = document.createElement("span");
-                // const idx = document.createTextNode(index);
-                // icon.appendChild(idx);
+                const idx = document.createTextNode(btnId);
+                icon.appendChild(idx);
 
                 const name1 = document.createElement("span");
                 const Name = document.createTextNode(it.hmcNm);
@@ -387,40 +390,64 @@ $(document).ready(async function () {
                 let btn = document.createElement("button");
                 btn.innerText = "상세보기";
                 btn.className = "btn";
-                const modal_wrap = document.createElement("div");
-                modal_wrap.className = "modal_wrap";
+                btn.setAttribute("id", index);
 
-                const xbutton = document.createElement("button");
-                xbutton.className = "modal_close";
-                xbutton.innerText = "X";
-                modal_wrap.appendChild(xbutton);
-                const text = document.createElement("div");
-                text.className = "text";
+                // const modal_wrap = document.createElement("div");
+                // modal_wrap.className = "modal_wrap";
+
+                // const xbutton = document.createElement("button");
+                // xbutton.className = "modal_close";
+                // xbutton.innerText = "X";
+                // modal_wrap.appendChild(xbutton);
+                // const text = document.createElement("div");
+                // text.className = "text";
+                // // const call = document.createTextNode(it.hmcTelNo);
+                // // text.appendChild(call);
+
+                // modal_wrap.appendChild(text);
                 // const call = document.createTextNode(it.hmcTelNo);
                 // text.appendChild(call);
-
-                modal_wrap.appendChild(text);
-                const call = document.createTextNode(it.hmcTelNo);
-                text.appendChild(call);
-                modal_wrap.appendChild(text);
+                // modal_wrap.appendChild(text);
 
                 item.appendChild(icon);
                 item.appendChild(name1);
                 item.appendChild(btn);
-                item.appendChild(modal_wrap);
+                // item.appendChild(modal_wrap);
                 container.append(item);
 
                 container.onclick = () => {
                   if (event.target.classList.contains("btn")) {
                     document.querySelector(".modal_wrap").style.display = "block";
                     document.querySelector(".modal_background").style.display = "block";
+
+                    let a = event.target.id;
+
+                    console.log(arr[a].hmcNm);
+                    console.log(arr[a].hmcTelNo);
+                    console.log(arr[a].locAddr);
+
+                    document.querySelector(".text").innerText = arr[a].hmcNm;
+                    document.querySelector(".addr").innerText = arr[a].hmcTelNo;
+                    document.querySelector(".telno").innerText = arr[a].locAddr;
+
+                    document.querySelector(".modal_close").addEventListener("click", modalClose);
+
+                    // modalObj.querySelector(".modal_close").addEventListener("click", () => {
+                    //   modalList = document.querySelectorAll(".modal_wrap");
+                    //   for (let x of modalList) {
+                    //     x.style.display = "none";
+                    //   }
+                    //   document.querySelector(".modal_background").style.display = "none";
+                    //   // const ttt = document.querySelector(".text");
+                    //   // const child = document.querySelector(".testtest");
+                    //   // child.parentNode.removeChild(child);
+                    // });
                   }
 
-                  document.querySelector(".modal_close").addEventListener("click", modalClose);
                   function modalClose() {
                     document.querySelector(".modal_wrap").style.display = "none";
                     document.querySelector(".modal_background").style.display = "none";
-                    // const ttt = document.querySelector(".text");
+                    const ttt = document.querySelector(".text");
                     // const child = document.querySelector(".testtest");
                     // child.parentNode.removeChild(child);
                   }
