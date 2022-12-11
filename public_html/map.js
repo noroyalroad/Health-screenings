@@ -425,10 +425,22 @@ $(document).ready(async function () {
                     console.log(arr[a].hmcNm);
                     console.log(arr[a].hmcTelNo);
                     console.log(arr[a].locAddr);
+                    console.log(arr[a].mchkChrgTypeCd);
+                    console.log(arr[a].ichkChrgTypeCd);
+
+                    if (arr[a].mchkChrgTypeCd === 1 || arr[a].ichkChrgTypeCd === 1 || arr[a].stmcaExmdChrgTypeCd === 1) {
+                      document.querySelector(".teeth").innerText = "O";
+                      document.querySelector(".kids").innerText = "O";
+                      document.querySelector(".wee").innerText = "O";
+                    } else {
+                      document.querySelector(".teeth").innerText = "X";
+                      document.querySelector(".kids").innerText = "X";
+                      document.querySelector(".wee").innerText = "X";
+                    }
 
                     document.querySelector(".text").innerText = arr[a].hmcNm;
-                    document.querySelector(".addr").innerText = arr[a].hmcTelNo;
-                    document.querySelector(".telno").innerText = arr[a].locAddr;
+                    document.querySelector(".addr").innerText = arr[a].locAddr;
+                    document.querySelector(".telno").innerText = arr[a].hmcTelNo;
 
                     document.querySelector(".modal_close").addEventListener("click", modalClose);
 
