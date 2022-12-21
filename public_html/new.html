@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=sgserccmw4&amp;submodules=geocoder"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./1.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css" /> -->
+    <script src="semantic/dist/semantic.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <h2>건강검진 기관 찾기</h2>
+    </div>
+    <div class="modal_background"></div>
+    <div class="modal_wrap">
+      <button class="modal_close">x</button>
+      <h3>검진 기관 상세 정보</h3>
+      <h4>기본 정보</h4>
+      <table class="detail info">
+        <tr>
+          <th>기관명</th>
+          <td class="text"></td>
+        </tr>
+        <tr>
+          <th>주소</th>
+          <td class="addr"></td>
+        </tr>
+        <tr>
+          <th>전화번호</th>
+          <td class="telno"></td>
+        </tr>
+      </table>
+      <h4>검진 항목</h4>
+      <table>
+        <tr>
+          <th>유방암</th>
+          <td>O</td>
+        </tr>
+        <tr>
+          <th>대장암</th>
+          <td>O</td>
+        </tr>
+        <tr>
+          <th>자궁경부암</th>
+          <td>O</td>
+        </tr>
+        <tr>
+          <th>간암</th>
+          <td>O</td>
+        </tr>
+        <tr>
+          <th>구강검진</th>
+          <td class="teeth"></td>
+        </tr>
+        <tr>
+          <th>일반</th>
+          <td>O</td>
+        </tr>
+        <tr>
+          <th>영유아</th>
+          <td class="kids"></td>
+        </tr>
+        <tr>
+          <th>위암</th>
+          <td class="wee"></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="search">
+      <input id="address" type="text" placeholder="검색할 주소" />
+      <input id="submit" type="button" value="주소검색" />
+    </div>
+    <div class="wiwi">
+      <div id="map" style="width: 400px; height: 600px; border: 1px solid black"></div>
+      <div class="searchbox">
+        <div class="header">
+          <h1>병원명 검색</h1>
+          <input onkeyup="filter()" type="text" id="value" placeholder="병원명을 검색하세요" />
+        </div>
+        <div class="container"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="./map.js"></script>
+    <script type="text/javascript" src="./search.js"></script>
+  </body>
+</html>
